@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 50px;
+        }
+        .form-container {
+            max-width: 400px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn-submit:hover {
+            background-color: #45a049;
+        }
+        .message {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Signup</h2>
+        <form id="signup-form">
+            <input type="text" id="firstName" class="input-field" placeholder="First Name" required>
+            <input type="text" id="lastName" class="input-field" placeholder="Last Name" required>
+            <input type="email" id="email" class="input-field" placeholder="Email" required>
+            <input type="password" id="password" class="input-field" placeholder="Password" required>
+            <button type="submit" class="btn-submit">Submit</button>
+        </form>
+        <div id="response-message" class="message"></div>
+    </div>
+    <script>
+        // Handle form submission
+        document.getElementById('signup-form').addEventListener('submit', async function(event) {
+            event.preventDefault();  // Prevent form from refreshing the page
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value; // Get password value
+            const userData = {
+                firstName,
+                lastName,
+                email,
+                password // Include password in the request
+            };
+            try {
+                // Sending POST request to the backend
+                const response = await fetch('http://localhost:3001/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+                const result = await response.text();
+                const responseMessage = document.getElementById('response-message');
+                if (response.ok) {
+                    responseMessage.innerHTML = `<p style="color: green;">${result}</p>`;
+                    setTimeout(() => {
+                        // Redirect to login.html after 2 seconds
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    responseMessage.innerHTML = `<p style="color: red;">Error: ${result}</p>`;
+                }
+            } catch (error) {
+                document.getElementById('response-message').innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
